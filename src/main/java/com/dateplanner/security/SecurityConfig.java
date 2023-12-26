@@ -1,5 +1,6 @@
 package com.dateplanner.security;
 
+import com.dateplanner.util.Ansi;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -28,14 +29,14 @@ public class SecurityConfig {
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(
                                 XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
                 .formLogin((formLogin) -> formLogin
-                        .loginPage("/user/login")
+                        .loginPage("/member/login")
                         .usernameParameter("loginId")
                         .passwordParameter("password")
                         .successHandler(new CustomSimpleUrlAuthenticationSuccessHandler())
                         .failureHandler(new CustomSimpleUrlAuthenticationFailureHandler())
                 )
                 .logout((logout) -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
                         .logoutSuccessHandler(this::customLogoutSuccessHandler)
                         .invalidateHttpSession(true))
         ;
@@ -43,6 +44,8 @@ public class SecurityConfig {
     }
 
     private void customLogoutSuccessHandler(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        System.out.println("\u001B[38;5;" + Ansi.getColor("green") + "m" + "<<< Logout Success >>>" + "\u001B[0m");
+
         String refererUrl = request.getHeader("Referer");
         if (refererUrl != null) {
             response.sendRedirect(refererUrl);

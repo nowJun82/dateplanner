@@ -1,5 +1,6 @@
 package com.dateplanner.security;
 
+import com.dateplanner.util.Ansi;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +22,8 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws ServletException, IOException {
+        System.out.println("\u001B[38;5;" + Ansi.getColor("green") + "m" + "<<< Login Success >>>" + "\u001B[0m");
+
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         clearAuthenticationAttributes(request);
 

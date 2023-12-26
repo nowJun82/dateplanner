@@ -1,0 +1,399 @@
+<html layout:decorate="@{dateplanner/common/layout}" lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>회원가입 : dateplanner</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+    <div class="find_wrap">
+        <div class="max-w-2xl mx-auto px-28 py-20 mt-28 mb-20 border">
+            <div class="other_signup">
+            </div>
+
+            <form th:action method="POST" name="signup-form" onsubmit="submitSignupForm(this); return false;"
+                  class="flex flex-col gap-6">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">아이디</span>
+                    </label>
+                    <input type="text" name="loginId" placeholder="아이디" class="input input-bordered" autofocus
+                           maxlength="12" onchange="$(this).keyup();" onpaste="setTimeoutZero(() => $(this).keyup());"
+                           onkeyup="checkLoginIdDupDebounce();">
+                    <div class="mt-2 text-sm"></div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">비밀번호</span>
+                    </label>
+                    <input type="password" name="password" placeholder="비밀번호" class="input input-bordered"
+                           maxlength="30">
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">비밀번호 확인</span>
+                    </label>
+                    <input type="password" name="password2" placeholder="비밀번호 확인" class="input input-bordered"
+                           maxlength="30">
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">이름</span>
+                    </label>
+                    <input type="text" name="name" placeholder="이름" class="input input-bordered" autofocus
+                           maxlength="30">
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">닉네임</span>
+                    </label>
+                    <input type="text" name="nickname" placeholder="닉네임" class="input input-bordered" autofocus
+                           maxlength="14" onchange="$(this).keyup();" onpaste="setTimeoutZero(() => $(this).keyup());"
+                           onkeyup="checkNicknameDupDebounce();">
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">이메일</span>
+                    </label>
+                    <input type="email" name="email" placeholder="이메일" class="input input-bordered" autofocus
+                           maxlength="30" onchange="$(this).keyup();" onpaste="setTimeoutZero(() => $(this).keyup());"
+                           onkeyup="checkEmailDupDebounce();">
+                    <div class="mt-2 text-sm"></div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">전화번호</span>
+                    </label>
+                    <input type="tel" name="phoneNumber" placeholder="'-' 없이 입력해주세요." class="input input-bordered"
+                           autofocus
+                           maxlength="11" onchange="$(this).keyup();" onpaste="setTimeoutZero(() => $(this).keyup());"
+                           onkeyup="checkPhoneNumberDupDebounce();">
+                    <div class="mt-2 text-sm"></div>
+                </div>
+
+                <div class="find_btn_wrap mt-8">
+                    <button class="btn btn-block btn-primary mb-5">
+                        <span>가입하기</span>
+                    </button>
+
+                    <div class="text-center">
+                        <a href="/member/login" class="text-gray-300 text-xs underline hover:text-blue-400">로그인</a>
+                        <a href="/member/findId" class="text-gray-300 text-xs mx-3 underline hover:text-blue-400">아이디
+                            찾기</a>
+                        <a href="/member/findPassword" class="text-gray-300 text-xs underline hover:text-blue-400">비밀번호
+                            찾기</a>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        function checkLoginIdDup(form) {
+            form.loginId.value = form.loginId.value.trim();
+
+            if ( form.loginId.value.length == 0 ) {
+                clearLoginIdInputMsg();
+                return;
+            }
+            if ( form.loginId.value.length < 8 ) {
+                clearLoginIdInputMsg();
+                return;
+            }
+
+            if ( validLoginId == form.loginId.value ) return;
+            if ( lastCheckedLoginId == form.loginId.value ) return;
+
+            lastCheckedLoginId = form.loginId.value;
+
+            clearLoginIdInputMsg();
+
+            fetch(
+                'checkLoginIdDup?loginId=' + form.loginId.value
+            )
+                .then(res => res.json())
+                .then((rsData) => {
+                    if ( rsData.success ) {
+                        validLoginId = form.loginId.value;
+                    }
+                    setLoginIdInputMsg(rsData.success, rsData.msg);
+                });
+
+        }
+
+        function checkNicknameDup(form) {
+            form.nickname.value = form.nickname.value.trim();
+
+            if ( form.nickname.value.length == 0 ) {
+                clearNicknameInputMsg();
+                return;
+            }
+
+            if ( validNickname == form.nickname.value ) return;
+            if ( lastCheckedNickname == form.nickname.value ) return;
+
+            lastCheckedNickname = form.nickname.value;
+
+            clearNicknameInputMsg();
+
+            fetch(
+                'checkNicknameDup?nickname=' + form.nickname.value
+            )
+                .then(res => res.json())
+                .then((rsData) => {
+                    if ( rsData.success ) {
+                        validNickname = form.nickname.value;
+                    }
+                    setNicknameInputMsg(rsData.success, rsData.msg);
+                });
+
+        }
+
+        function checkEmailDup(form) {
+            form.email.value = form.email.value.trim();
+
+            if ( form.email.value.length == 0 ) {
+                clearEmailInputMsg();
+                return;
+            }
+            if ( form.email.value.length < 3 ) {
+                clearEmailInputMsg();
+                return;
+            }
+
+            if ( validEmail == form.email.value ) return;
+            if ( lastCheckedEmail == form.email.value ) return;
+
+            lastCheckedEmail = form.email.value;
+
+            clearEmailInputMsg();
+
+            fetch(
+                'checkEmailDup?email=' + form.email.value
+            )
+                .then(res => res.json())
+                .then((rsData) => {
+                    if ( rsData.success ) {
+                        validEmail = form.email.value;
+                    }
+                    setEmailInputMsg(rsData.success, rsData.msg);
+                });
+
+        }
+
+        function checkPhoneNumberDup(form) {
+            form.phoneNumber.value = form.phoneNumber.value.trim();
+
+            if ( form.phoneNumber.value.length == 0 ) {
+                clearPhoneNumberInputMsg();
+                return;
+            }
+            if ( form.phoneNumber.value.length < 11 ) {
+                clearPhoneNumberInputMsg();
+                return;
+            }
+
+            if ( validPhoneNumber == form.phoneNumber.value ) return;
+            if ( lastCheckedPhoneNumber == form.phoneNumber.value ) return;
+
+            lastCheckedPhoneNumber = form.phoneNumber.value;
+
+            clearPhoneNumberInputMsg();
+
+            fetch(
+                'checkPhoneNumberDup?phoneNumber=' + form.phoneNumber.value
+            )
+                .then(res => res.json())
+                .then((rsData) => {
+                    if ( rsData.success ) {
+                        validPhoneNumber = form.phoneNumber.value;
+                    }
+                    setPhoneNumberInputMsg(rsData.success, rsData.msg);
+                });
+
+        }
+
+        const signupForm = document['signup-form'];
+        const checkLoginIdDupDebounce = _.debounce(() => checkLoginIdDup(signupForm), 500);
+        const checkNicknameDupDebounce = _.debounce(() => checkNicknameDup(signupForm), 500);
+        const checkEmailDupDebounce = _.debounce(() => checkEmailDup(signupForm), 500);
+        const checkPhoneNumberDupDebounce = _.debounce(() => checkPhoneNumberDup(signupForm), 500);
+
+        function clearLoginIdInputMsg() {
+            $(signupForm.loginId).removeClass('input-accent input-error');
+            $(signupForm.loginId).next().removeClass('text-green-400 text-red-400');
+            $(signupForm.loginId).next().empty();
+        }
+        function setLoginIdInputMsg(isSuccess, msg) {
+            if ( isSuccess ) $(signupForm.loginId).addClass('input-accent');
+            if ( !isSuccess ) $(signupForm.loginId).addClass('input-error');
+
+            $(signupForm.loginId).next().addClass(isSuccess ? 'text-green-400' : 'text-red-400');
+            $(signupForm.loginId).next().text(msg);
+        }
+
+        function clearNicknameInputMsg() {
+            $(signupForm.nickname).removeClass('input-accent input-error');
+            $(signupForm.nickname).next().removeClass('text-green-400 text-red-400');
+            $(signupForm.nickname).next().empty();
+        }
+        function setNicknameInputMsg(isSuccess, msg) {
+            if ( isSuccess ) $(signupForm.nickname).addClass('input-accent');
+            if ( !isSuccess ) $(signupForm.nickname).addClass('input-error');
+
+            $(signupForm.nickname).next().addClass(isSuccess ? 'text-green-400' : 'text-red-400');
+            $(signupForm.nickname).next().text(msg);
+        }
+
+        function clearEmailInputMsg() {
+            $(signupForm.email).removeClass('input-accent input-error');
+            $(signupForm.email).next().removeClass('text-green-400 text-red-400');
+            $(signupForm.email).next().empty();
+        }
+        function setEmailInputMsg(isSuccess, msg) {
+            if ( isSuccess ) $(signupForm.email).addClass('input-accent');
+            if ( !isSuccess ) $(signupForm.email).addClass('input-error');
+
+            $(signupForm.email).next().addClass(isSuccess ? 'text-green-400' : 'text-red-400');
+            $(signupForm.email).next().text(msg);
+        }
+
+        function clearPhoneNumberInputMsg() {
+            $(signupForm.phoneNumber).removeClass('input-accent input-error');
+            $(signupForm.phoneNumber).next().removeClass('text-green-400 text-red-400');
+            $(signupForm.phoneNumber).next().empty();
+        }
+        function setPhoneNumberInputMsg(isSuccess, msg) {
+            if ( isSuccess ) $(signupForm.phoneNumber).addClass('input-accent');
+            if ( !isSuccess ) $(signupForm.phoneNumber).addClass('input-error');
+
+            $(signupForm.phoneNumber).next().addClass(isSuccess ? 'text-green-400' : 'text-red-400');
+            $(signupForm.phoneNumber).next().text(msg);
+        }
+
+        let validLoginId = '';
+        let lastCheckedLoginId = '';
+        let validNickname = '';
+        let lastCheckedNickname = '';
+        let validEmail = '';
+        let lastCheckedEmail = '';
+        let validPhoneNumber = '';
+        let lastCheckedPhoneNumber = '';
+
+        let submitSignupFormDone = false;
+        function submitSignupForm(form) {
+            if ( submitSignupFormDone ) return;
+
+            form.loginId.value = form.loginId.value.trim();
+
+            if ( form.loginId.value.length == 0 ) {
+                form.loginId.focus();
+                toastWarning('아이디 입력 란을 확인해주세요.');
+                return;
+            }
+            if ( form.loginId.value.length < 8 ) {
+                form.loginId.focus();
+                toastWarning('아이디는 최소 8글자 이상이어야 합니다.');
+                return;
+            }
+
+            form.password.value = form.password.value.trim();
+
+            if ( form.password.value.length == 0 ) {
+                form.password.focus();
+                toastWarning('비밀번호 입력 란을 확인해주세요.');
+                return;
+            }
+
+            form.password2.value = form.password2.value.trim();
+
+            if ( form.password2.value.length == 0 ) {
+                form.password2.focus();
+                toastWarning('비밀번호 확인 입력 란을 확인해주세요.');
+                return;
+            }
+            if ( form.password.value != form.password2.value ) {
+                form.password2.focus();
+                toastWarning('두 개의 비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            form.name.value = form.name.value.trim();
+
+            if ( form.name.value.length == 0 ) {
+                form.name.focus();
+                toastWarning('이름 입력 란을 확인해주세요.');
+                return;
+            }
+
+            form.nickname.value = form.nickname.value.trim();
+
+            if ( form.nickname.value.length == 0 ) {
+                form.nickname.focus();
+                toastWarning('닉네임 입력 란을 확인해주세요.');
+                return;
+            }
+            if ( form.nickname.value.length < 3 ) {
+                form.nickname.focus();
+                toastWarning('닉네임은 최소 3글자 이상이어야 합니다.');
+                return;
+            }
+
+            form.email.value = form.email.value.trim();
+
+            if ( form.email.value.length == 0 ) {
+                form.email.focus();
+                toastWarning('이메일 입력 란을 확인해주세요.');
+                return;
+            }
+
+            form.phoneNumber.value = form.phoneNumber.value.trim();
+
+            if ( form.phoneNumber.value.length == 0 ) {
+                form.phoneNumber.focus();
+                toastWarning('전화번호 입력 란을 확인해주세요.');
+                return;
+            }
+
+            if ( validLoginId != form.loginId.value ) {
+                $(form.loginId).next().focus();
+                toastWarning('아이디 중복 체크를 해주세요.');
+                return;
+            }
+
+            if ( validNickname != form.nickname.value ) {
+                $(form.nickname).next().focus();
+                toastWarning('닉네임 중복 체크를 해주세요.');
+                return;
+            }
+
+            if ( validEmail != form.email.value ) {
+                $(form.email).next().focus();
+                toastWarning('이메일 중복 체크를 해주세요.');
+                return;
+            }
+
+            if ( validPhoneNumber != form.phoneNumber.value ) {
+                $(form.phoneNumber).next().focus();
+                toastWarning('전화번호 중복 체크를 해주세요.');
+                return;
+            }
+
+            form.submit();
+            submitSignupFormDone = true;
+        }
+    </script>
+</div>
+
+</body>
+</html>
