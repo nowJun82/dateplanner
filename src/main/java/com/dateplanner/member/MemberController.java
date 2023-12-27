@@ -34,7 +34,7 @@ public class MemberController {
             return "redirect:/";
         }
 
-        return "member/login_form";
+        return "dateplanner/member/login_form";
     }
 
     @PreAuthorize("isAnonymous()")
@@ -43,7 +43,7 @@ public class MemberController {
         System.out.println("\u001B[38;5;" + Ansi.getColor("blue") + "m" + "<<< Signup Page >>>" + "\u001B[0m");
 
         if (memberService.getCurrentUser() == null) {
-            return "member/signup_form";
+            return "dateplanner/member/signup_form";
         } else {
             return "redirect:/";
         }
@@ -70,7 +70,7 @@ public class MemberController {
 
         if (signupRs.isFail()) {
             rq.historyBack(signupRs.getMsg());
-            return "static.common/js";
+            return "static.resource/js";
         }
 
         return rq.redirect("/", signupRs.getMsg());

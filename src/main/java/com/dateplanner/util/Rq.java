@@ -144,6 +144,6 @@ public class Rq {
         // 200 이 아니라 400 으로 응답 코드가 지정 되게
         httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
-        return "static.common/js";
+        return "static.resource/js";
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="winter">
+<html lang="ko" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,8 @@
 
     <!-- 제이쿼리 불러오기 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
 
     <!-- toastr 불러오기 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
@@ -20,20 +21,19 @@
     <!-- 아이콘 목록 : https://fontawesome.com/search?o=r&m=free -->
 
     <!-- 데이지 UI 불러오기 -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!--    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.7.7/dist/full.css" rel="stylesheet" type="text/css"/>-->
-    <link rel="stylesheet" href="/resource/common/common.css">
+    <link rel="stylesheet" href="/resource/common/common.css" type="text/css">
     <script src="/resource/common/common.js"></script>
 </head>
 <body>
-<div class="flex flex-col m-auto relative min-h-screen">
-    <div th:replace="~{mily/common/header :: headerFragment}"></div>
+<!--<div class="flex flex-col m-auto relative min-h-screen">-->
+<!--    <div th:replace="~{dateplanner/common/header :: headerFragment}"></div>-->
 
-    <th:block layout:fragment="content" class="mt-20 max-w-7xl m-auto"></th:block>
+<th:block layout:fragment="content" class="mt-20 max-w-7xl m-auto"></th:block>
 
-    <div th:replace="~{mily/common/footer :: footerFragment}"></div>
-</div>
+<!--    <div th:replace="~{dateplanner/common/footer :: footerFragment}"></div>-->
+<!--</div>-->
 </body>
 </html>

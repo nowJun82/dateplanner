@@ -1,9 +1,7 @@
-<html layout:decorate="@{dateplanner/common/layout}" lang="ko">
+<html layout:decorate="@{dateplanner/common/layout}" lang="ko" data-theme="dark">
 <head>
     <meta charset="UTF-8"/>
     <title>회원가입 : dateplanner</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
 </head>
 
 <body>
@@ -57,6 +55,7 @@
                     <input type="text" name="nickname" placeholder="닉네임" class="input input-bordered" autofocus
                            maxlength="14" onchange="$(this).keyup();" onpaste="setTimeoutZero(() => $(this).keyup());"
                            onkeyup="checkNicknameDupDebounce();">
+                    <div class="mt-2 text-sm"></div>
                 </div>
 
                 <div class="form-control">

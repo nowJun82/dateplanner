@@ -15,7 +15,7 @@ spring:
     show-sql: true
   thymeleaf:
     cache: false
-    prefix: file:src/main/resources/templates/dateplanner/
+    prefix: file:src/main/resources/templates/
   output:
     ansi:
       enabled: always
