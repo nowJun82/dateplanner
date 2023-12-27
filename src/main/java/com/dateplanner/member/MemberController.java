@@ -8,7 +8,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -76,8 +77,9 @@ public class MemberController {
         return rq.redirect("/", signupRs.getMsg());
     }
 
-    @Getter
+    @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class SignupForm {
         @NotBlank
         private String loginId;

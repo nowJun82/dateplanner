@@ -342,9 +342,9 @@
                 toastWarning('닉네임 입력 란을 확인해주세요.');
                 return;
             }
-            if ( form.nickname.value.length < 3 ) {
+            if ( form.nickname.value.length < 2 ) {
                 form.nickname.focus();
-                toastWarning('닉네임은 최소 3글자 이상이어야 합니다.');
+                toastWarning('닉네임은 최소 2글자 이상이어야 합니다.');
                 return;
             }
 
