@@ -77,6 +77,15 @@ public class MemberController {
         return rq.redirect("/", signupRs.getMsg());
     }
 
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/loginAndSignup")
+    public String showLoginAndSignup() {
+        if (memberService.getCurrentUser() != null) {
+            return "redirect:/" + httpServletRequest.getHeader("Referer");
+        }
+        return "dateplanner/member/loginAndSignup";
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
